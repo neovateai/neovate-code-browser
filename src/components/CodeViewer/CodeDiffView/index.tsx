@@ -1,10 +1,10 @@
-import { createStyles } from 'antd-style';
-import { forwardRef } from 'react';
-import { useSnapshot } from 'valtio';
+import { forwardRef, useEffect, useState } from 'react';
 import { CodeRenderer } from '@/components/CodeRenderer/CodeRenderer';
-import { state } from '@/state/chat';
+import { useClipboard } from '@/hooks/useClipboard';
+import { createHeightStyle, STYLE_CONSTANTS } from '@/constants/styles';
 import type { CodeDiffViewerTabItem } from '@/types/codeViewer';
 import DiffToolbar from '../DiffToolbar';
+import styles from './index.module.css';
 
 interface CodeDiffViewProps {
   item: CodeDiffViewerTabItem;
@@ -17,52 +17,36 @@ export interface CodeDiffViewRef {
   jumpToLine: (lineCount: number) => void;
 }
 
-const useStyle = createStyles(
-  ({ css }, { maxHeight }: { maxHeight?: number }) => {
-    return {
-      container: css`
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        ${
-          maxHeight
-            ? css`
-              max-height: ${maxHeight}px;
-            `
-            : ''
-        }
-      `,
-      editor: css`
-        height: 100%;
-        flex: 1;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-      `,
-    };
-  },
-);
-
 const CodeDiffView = forwardRef<CodeDiffViewRef, CodeDiffViewProps>(
   (props, ref) => {
     const { item, maxHeight, hideToolBar } = props;
-    const { styles } = useStyle({ maxHeight });
-    const snap = useSnapshot(state);
+    const [isCopySuccess, setIsCopySuccess] = useState(false);
+    const { writeText } = useClipboard();
+
+    const handleCopy = async () => {
+      try {
+        await writeText(item.modifiedCode);
+        setIsCopySuccess(true);
+      } catch (error) {
+        console.error('Failed to copy content:', error);
+      }
+    };
+
+    useEffect(() => {
+      if (isCopySuccess) {
+        const timer = setTimeout(() => {
+          setIsCopySuccess(false);
+        }, STYLE_CONSTANTS.TIMING.COPY_SUCCESS_DURATION);
+        return () => clearTimeout(timer);
+      }
+    }, [isCopySuccess]);
 
     return (
-      <div className={styles.container}>
+      <div className={styles.container} style={createHeightStyle(maxHeight)}>
         {!hideToolBar && (
           <DiffToolbar
-            onGotoDiff={() => {
-              console.log('onGotoDiff');
-              // Simple diff navigation
-            }}
-            onAcceptAll={() => {
-              snap.approvalModal?.resolve('approve_always_edit');
-            }}
-            onRejectAll={() => {
-              snap.approvalModal?.resolve('deny');
-            }}
+            onCopy={handleCopy}
+            isCopySuccess={isCopySuccess}
             item={item}
           />
         )}
