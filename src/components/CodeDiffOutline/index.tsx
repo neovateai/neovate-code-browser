@@ -7,6 +7,7 @@ import { createStyles } from 'antd-style';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSnapshot } from 'valtio';
+import { STYLE_CONSTANTS } from '@/constants/styles';
 import { useClipboard } from '@/hooks/useClipboard';
 import ApproveToolIcon from '@/icons/approveTool.svg?react';
 import CopyIcon from '@/icons/copy.svg?react';
@@ -19,12 +20,13 @@ import CodeDiffView from '../CodeViewer/CodeDiffView';
 import DiffStatBlocks from '../CodeViewer/DiffStatBlocks';
 import DevFileIcon from '../DevFileIcon';
 import MessageWrapper from '../MessageWrapper';
+import { computeDiffContent, isValidDiffContent } from './diffUtils';
 
 export interface FileEdit {
   toolCallId: string;
   old_string: string;
   new_string: string;
-  /** Represents the status of this edit, undefined means unmodified */
+  /** Represents the status of this edit, undefined means not yet reviewed */
   editStatus?: CodeViewerEditStatus;
 }
 
@@ -80,18 +82,19 @@ const CodeDiffOutline = (props: CodeDiffOutlineProps) => {
   const { editStatus, old_string, new_string } = edit;
 
   const code = useMemo(() => {
-    return {
-      oldContent: old_string,
-      newContent: new_string,
-    };
+    const diffContent = computeDiffContent(old_string, new_string);
+    if (!isValidDiffContent(diffContent)) {
+      return { oldContent: '', newContent: '' };
+    }
+    return diffContent;
   }, [old_string, new_string]);
 
-  // Used for display
+  // Used for display purposes
   const [earlyFile, setEarlyFile] = useState<string>();
 
   useEffect(() => {
     if (!earlyFile && path) {
-      // Record the initial state of file
+      // Record the initial file path
       setEarlyFile(path);
     }
   }, [path]);
@@ -103,10 +106,12 @@ const CodeDiffOutline = (props: CodeDiffOutlineProps) => {
         newContent: '',
       };
     }
-    return {
-      oldContent: old_string,
-      newContent: new_string,
-    };
+
+    const diffContent = computeDiffContent(old_string, new_string);
+    if (!isValidDiffContent(diffContent)) {
+      return { oldContent: '', newContent: '' };
+    }
+    return diffContent;
   }, [earlyFile, old_string, new_string]);
 
   const language = useMemo(() => inferFileType(path), [path]);
@@ -135,13 +140,13 @@ const CodeDiffOutline = (props: CodeDiffOutlineProps) => {
   const handleShowCodeViewer = () => {
     codeViewer.actions.openCodeViewer(
       path,
-      // TODO 恢复之前的逻辑
+      // TODO: Restore previous logic
       earlyCode.oldContent,
       earlyCode.newContent,
     );
   };
 
-  // Build status information
+  // Build status display content
   const renderStatusContent = () => {
     if (!hasDiff || editStatus) return null;
 
@@ -236,13 +241,13 @@ const CodeDiffOutline = (props: CodeDiffOutlineProps) => {
       defaultExpanded={state === 'call'}
       showExpandIcon={true}
       expandable={true}
-      maxHeight={300}
+      maxHeight={STYLE_CONSTANTS.HEIGHTS.CODE_DIFF_OUTLINE_MAX_HEIGHT}
       actions={actions}
       footers={footers}
     >
       <CodeDiffView
         hideToolBar
-        maxHeight={300}
+        maxHeight={STYLE_CONSTANTS.HEIGHTS.CODE_DIFF_OUTLINE_MAX_HEIGHT}
         heightFollow="content"
         item={{
           language,
