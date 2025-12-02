@@ -26,7 +26,7 @@ export interface FileEdit {
   toolCallId: string;
   old_string: string;
   new_string: string;
-  /** Represents the status of this edit, undefined means unmodified */
+  /** Represents the status of this edit, undefined means not yet reviewed */
   editStatus?: CodeViewerEditStatus;
 }
 
@@ -89,12 +89,12 @@ const CodeDiffOutline = (props: CodeDiffOutlineProps) => {
     return diffContent;
   }, [old_string, new_string]);
 
-  // Used for display
+  // Used for display purposes
   const [earlyFile, setEarlyFile] = useState<string>();
 
   useEffect(() => {
     if (!earlyFile && path) {
-      // Record the initial state of file
+      // Record the initial file path
       setEarlyFile(path);
     }
   }, [path]);
@@ -140,13 +140,13 @@ const CodeDiffOutline = (props: CodeDiffOutlineProps) => {
   const handleShowCodeViewer = () => {
     codeViewer.actions.openCodeViewer(
       path,
-      // TODO 恢复之前的逻辑
+      // TODO: Restore previous logic
       earlyCode.oldContent,
       earlyCode.newContent,
     );
   };
 
-  // Build status information
+  // Build status display content
   const renderStatusContent = () => {
     if (!hasDiff || editStatus) return null;
 

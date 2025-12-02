@@ -19,10 +19,10 @@ interface CodeViewerState {
 }
 
 interface DisplayNormalViewerConfigs {
-  /** If empty but path is provided, will try to infer from path extension */
+  /** If empty but path is provided, will attempt to infer from path extension */
   language?: CodeViewerLanguage;
   code: string;
-  /** File path, used as key by default */
+  /** File path, used as unique key by default */
   path?: string;
   mode?: CodeNormalViewerMode;
 }
@@ -68,10 +68,10 @@ export const actions = {
 
     if (nextItems.length === 0) {
       state.visible = false;
-      // Auto collapse right panel when there are no more tabs
+      // Auto-collapse right panel when there are no more tabs
       layout.actions.setRightPanelExpanded(false);
     } else {
-      // TODO: Could be optimized to open the previous tab instead of the first one
+      // TODO: Could be optimized to activate the previous tab instead of the first one
       const nextActiveId = nextItems[0].id;
       state.activeId = nextActiveId;
     }
@@ -126,12 +126,12 @@ export const actions = {
     }
 
     state.activeId = id;
-    // Auto expand and show right panel when opening CodeViewer
+    // Auto-expand and show right panel when opening CodeViewer
     state.visible = true;
     layout.actions.setRightPanelExpanded(true);
   },
 
-  /** Need to call this function again to refresh display after code updates */
+  /** Must call this function again to refresh display after code updates */
   updateDiffViewerConfig: (config: DisplayDiffViewerConfigs) => {
     const { path, modifiedCode, originalCode, language, diffStat } = config;
 
@@ -177,13 +177,13 @@ export const actions = {
     }
 
     state.activeId = id;
-    // Auto expand and show right panel when opening CodeViewer
+    // Auto-expand and show right panel when opening CodeViewer
     state.visible = true;
     layout.actions.setRightPanelExpanded(true);
   },
 
   /**
-   * Show editor, open specific file and jump to specific line. For DiffView, jump to corresponding line in ModifiedModel
+   * Show editor, open specific file and jump to specific line. For DiffView, jumps to corresponding line in ModifiedModel
    * @param path File path
    */
   jumpToLine: (path: string, lineCount: number) => {
@@ -196,14 +196,14 @@ export const actions = {
     if (remainingItem && jumpFunction) {
       state.activeId = remainingItem.id;
       state.visible = true;
-      // Auto expand right panel when jumping to code line
+      // Auto-expand right panel when jumping to code line
       layout.actions.setRightPanelExpanded(true);
 
       jumpFunction(lineCount);
     }
   },
 
-  /** Register jump function */
+  /** Register jump function for a specific file path */
   registerJumpFunction: (path: string, fn: (_: number) => void) => {
     state.jumpFunctionMap[path] = fn;
   },

@@ -1,6 +1,6 @@
 /**
- * 差异计算工具函数
- * 提供安全的文本差异处理功能
+ * Diff calculation utility functions
+ * Provides safe text diff processing functionality
  */
 
 export interface DiffContent {
@@ -9,19 +9,19 @@ export interface DiffContent {
 }
 
 /**
- * 安全地计算文件差异内容
- * 处理新建文件和修改文件的不同场景
+ * Safely calculate file diff content
+ * Handles different scenarios for new files and modified files
  *
- * @param oldStr - 原始内容，空字符串表示新建文件
- * @param newStr - 新内容
- * @returns 差异内容对象
+ * @param oldStr - Original content, empty string means new file
+ * @param newStr - New content
+ * @returns Diff content object
  */
 export const computeDiffContent = (
   oldStr?: string | null,
   newStr?: string | null,
 ): DiffContent => {
   try {
-    // 统一的输入处理 - 只接受字符串类型
+    // Unified input handling - only accept string type
     const safeOldStr = typeof oldStr === 'string' ? oldStr : '';
     const safeNewStr = typeof newStr === 'string' ? newStr : '';
 
@@ -31,13 +31,13 @@ export const computeDiffContent = (
     };
   } catch (error) {
     console.error('Failed to compute diff content:', error);
-    // 统一错误回退策略：都返回空字符串
+    // Unified error fallback strategy: return empty strings
     return { oldContent: '', newContent: '' };
   }
 };
 
 /**
- * 验证差异内容是否有效
+ * Validate if diff content is valid
  */
 export const isValidDiffContent = (diff: DiffContent): boolean => {
   return (
@@ -48,7 +48,7 @@ export const isValidDiffContent = (diff: DiffContent): boolean => {
 };
 
 /**
- * 计算差异统计信息
+ * Calculate diff statistics
  */
 export const getDiffStats = (diff: DiffContent) => {
   if (!isValidDiffContent(diff)) {
