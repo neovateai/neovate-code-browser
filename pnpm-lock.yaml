@@ -1805,7 +1805,6 @@ packages:
     dependencies:
       '@tanstack/router-core': 1.139.12
       clsx: 2.1.1
-      csstype: 3.2.3
       goober: 2.1.18(csstype@3.2.3)
       solid-js: 1.9.10
       tiny-invariant: 1.3.3
@@ -2618,6 +2617,7 @@ packages:
       js-yaml: 4.1.1
       parse-json: 5.2.0
       path-type: 4.0.0
+    optionalDependencies:
       typescript: 5.8.3
     dev: true
 
@@ -3539,6 +3539,7 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.28.4
+    optionalDependencies:
       typescript: 5.8.3
 
   /iconv-lite@0.6.3:
@@ -4165,7 +4166,7 @@ packages:
       devlop: 1.1.0
       get-east-asian-width: 1.4.0
       micromark: 4.0.2
-      micromark-extension-cjk-friendly-util: 2.1.1
+      micromark-extension-cjk-friendly-util: 2.1.1(micromark-util-types@2.0.2)
       micromark-util-character: 2.1.1
       micromark-util-chunked: 2.0.1
       micromark-util-resolve-all: 2.0.1
@@ -4198,7 +4199,7 @@ packages:
     dependencies:
       devlop: 1.1.0
       micromark: 4.0.2
-      micromark-extension-cjk-friendly-util: 2.1.1
+      micromark-extension-cjk-friendly-util: 2.1.1(micromark-util-types@2.0.2)
       micromark-util-chunked: 2.0.1
       micromark-util-resolve-all: 2.0.1
       micromark-util-symbol: 2.0.1
@@ -4932,6 +4933,11 @@ packages:
       rc-util: 5.44.4(react-dom@19.2.0)(react@19.2.0)
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
+    optionalDependencies:
+      date-fns: 4.1.0
+      dayjs: 1.11.19
+      luxon: 3.7.2
+      moment: 2.30.1
 
   /rc-progress@4.0.0(react-dom@19.2.0)(react@19.2.0):
     resolution: {integrity: sha512-oofVMMafOCokIUIBnZLNcOZFsABaUw8PPrf1/y0ZBvKZNpOiu5h4AO9vv11Sw0p4Hb3D0yGWuEattcQGtNJ/aw==}
@@ -5341,6 +5347,8 @@ packages:
     dependencies:
       micromark-extension-cjk-friendly-gfm-strikethrough: 1.2.3(micromark@4.0.2)
       unified: 11.0.5
+    optionalDependencies:
+      '@types/mdast': 4.0.4
     transitivePeerDependencies:
       - micromark
       - micromark-util-types
@@ -5358,6 +5366,8 @@ packages:
     dependencies:
       micromark-extension-cjk-friendly: 1.2.3(micromark@4.0.2)
       unified: 11.0.5
+    optionalDependencies:
+      '@types/mdast': 4.0.4
     transitivePeerDependencies:
       - micromark
       - micromark-util-types
@@ -5883,8 +5893,9 @@ packages:
       react:
         optional: true
     dependencies:
-      '@types/react': 19.2.7
       proxy-compare: 3.0.1
+    optionalDependencies:
+      '@types/react': 19.2.7
       react: 19.2.0
     dev: false
 

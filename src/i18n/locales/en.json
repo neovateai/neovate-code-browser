@@ -79,6 +79,10 @@
     "sendMessage": "Send Message",
     "thinking": "Thinking...",
     "stopGenerating": "Stop Generating",
+    "selectModel": "Select model",
+    "searchModel": "Search models",
+    "noModels": "No models available",
+    "noModelsFound": "No models found",
     "inputPlaceholder": "Input @ to use skills or input / to use commands"
   },
   "prompts": {
